@@ -31,7 +31,7 @@ class Controller extends GetxController {
   }
 
   // Color Theme
-  var themeColor = Colors.blue.obs;
+  var themeColor = Colors.orange.obs;
 
   // Create Invoice
 
@@ -40,8 +40,8 @@ class Controller extends GetxController {
   var totalList = <double>[].obs;
 
   // Create  PDF
-  var pdfColor = PdfColors.blue.obs;
-  var pdfColorLight = PdfColors.blue200.obs;
+  var pdfColor = PdfColors.orange.obs;
+  var pdfColorLight = PdfColors.orange200.obs;
 
   var companyName = "".obs;
   var companyAddress = "".obs;
