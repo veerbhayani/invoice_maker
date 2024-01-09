@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:invoice_maker/screens/adscreen.dart';
 import 'package:invoice_maker/screens/create_invoice_page.dart';
 import 'package:pdf/pdf.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,6 +23,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   void initState() {
+    interAds();
     super.initState();
   }
 
@@ -161,6 +163,7 @@ class _HomePageState extends State<HomePage> {
                       barBlur: 70,
                       margin: const EdgeInsets.all(15),
                       onTap: (val) {
+
                         Get.to(AddCompanyDetails());
                         Get.back();
                       },
@@ -216,6 +219,10 @@ class _HomePageState extends State<HomePage> {
         floatingActionButton: Obx(() => (controller.tabIndex.value == 0)
             ? ElevatedButton.icon(
                 onPressed: () {
+                  if (interstitialAd != null) {
+                    interstitialAd!.show();
+                    interAds();
+                  }
                   addEditDialogBox(controller, "");
                 },
                 label: const Text("Product"),
@@ -224,6 +231,10 @@ class _HomePageState extends State<HomePage> {
               )
             : ElevatedButton.icon(
                 onPressed: () {
+                  if (interstitialAd != null) {
+                    interstitialAd!.show();
+                    interAds();
+                  }
                   addEditDialogBox(controller, "");
                 },
                 label: const Text("Customer"),

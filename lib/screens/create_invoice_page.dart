@@ -3,19 +3,29 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:invoice_maker/screens/adscreen.dart';
 import 'package:invoice_maker/screens/home_page.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:printing/printing.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../styles/styles.dart';
 
-class CreateInvoice extends StatelessWidget {
+class CreateInvoice extends StatefulWidget {
   const CreateInvoice({super.key});
 
+  @override
+  State<CreateInvoice> createState() => _CreateInvoiceState();
+}
+
+class _CreateInvoiceState extends State<CreateInvoice> {
+  @override
+  void initState() {
+    interAds();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     final logoImage = pw.MemoryImage(
@@ -37,7 +47,7 @@ class CreateInvoice extends StatelessWidget {
         leading: IconButton(
             tooltip: "Back To Home Page",
             icon: Obx(
-              () => Icon(
+                  () => Icon(
                 Icons.arrow_back_ios_new_sharp,
                 color: (controller.isDarkTheme.value)
                     ? Colors.black
@@ -86,12 +96,12 @@ class CreateInvoice extends StatelessWidget {
                         children: [
                           IconButton(
                             splashColor:
-                                controller.themeColor.value.withOpacity(0.4),
+                            controller.themeColor.value.withOpacity(0.4),
                             onPressed: () {
                               (controller.counter[i] == 0)
                                   ? controller.counter[i] = 0
                                   : controller.counter[i] =
-                                      controller.counter[i] - 1;
+                                  controller.counter[i] - 1;
                               controller.totalList[i] = controller.counter[i] *
                                   double.parse(
                                       "${controller.productsList[i].price}");
@@ -107,14 +117,14 @@ class CreateInvoice extends StatelessWidget {
                                 size: 30, color: controller.themeColor.value),
                           ),
                           Obx(
-                            () => Text(
+                                () => Text(
                               "${controller.counter[i]}",
                               style: textStyle(),
                             ),
                           ),
                           IconButton(
                             splashColor:
-                                controller.themeColor.value.withOpacity(0.4),
+                            controller.themeColor.value.withOpacity(0.4),
                             onPressed: () {
                               controller.counter[i] = controller.counter[i] + 1;
                               controller.totalList[i] = controller.counter[i] *
@@ -147,7 +157,7 @@ class CreateInvoice extends StatelessWidget {
                 children: [
                   const Spacer(flex: 4),
                   Obx(
-                    () => Text(
+                        () => Text(
                       "Total = ₹ ${controller.total.value}",
                       style: textStyle(),
                     ),
@@ -160,7 +170,7 @@ class CreateInvoice extends StatelessWidget {
                           "Select Products First",
                           "After Next Button is Working....",
                           backgroundColor:
-                              controller.themeColor.value.withOpacity(0.7),
+                          controller.themeColor.value.withOpacity(0.7),
                           snackPosition: SnackPosition.BOTTOM,
                           icon: const Icon(Icons.error_outline_outlined),
                           barBlur: 70,
@@ -171,7 +181,7 @@ class CreateInvoice extends StatelessWidget {
                           AlertDialog(
                             shape: const RoundedRectangleBorder(
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(25)),
+                              BorderRadius.all(Radius.circular(25)),
                             ),
                             scrollable: true,
                             title: Container(
@@ -185,29 +195,29 @@ class CreateInvoice extends StatelessWidget {
                               children: controller.customersList
                                   .map(
                                     (e) => InkWell(
-                                      onTap: () {
-                                        Get.back();
-                                        pdfDialogBox(e, logoImage);
-                                      },
-                                      borderRadius: BorderRadius.circular(50),
-                                      child: Card(
-                                        shape: const StadiumBorder(),
-                                        color: controller.themeColor.value
-                                            .withOpacity(0.2),
-                                        elevation: 0,
-                                        child: ListTile(
-                                          title: Text(
-                                            "${e.customerName}",
-                                            style: textStyleProducts(),
-                                          ),
-                                          trailing: Text(
-                                            "${e.customerNumber}",
-                                            style: textStyleProducts(),
-                                          ),
-                                        ),
+                                  onTap: () {
+                                    Get.back();
+                                    pdfDialogBox(e, logoImage);
+                                  },
+                                  borderRadius: BorderRadius.circular(50),
+                                  child: Card(
+                                    shape: const StadiumBorder(),
+                                    color: controller.themeColor.value
+                                        .withOpacity(0.2),
+                                    elevation: 0,
+                                    child: ListTile(
+                                      title: Text(
+                                        "${e.customerName}",
+                                        style: textStyleProducts(),
+                                      ),
+                                      trailing: Text(
+                                        "${e.customerNumber}",
+                                        style: textStyleProducts(),
                                       ),
                                     ),
-                                  )
+                                  ),
+                                ),
+                              )
                                   .toList(),
                             ),
                           ),
@@ -217,7 +227,7 @@ class CreateInvoice extends StatelessWidget {
                     style: elevatedButtonStyle(),
                     label: const Text("Next"),
                     icon:
-                        const Icon(Icons.keyboard_double_arrow_right_outlined),
+                    const Icon(Icons.keyboard_double_arrow_right_outlined),
                   ),
                   const Spacer(),
                 ],
@@ -268,6 +278,10 @@ class CreateInvoice extends StatelessWidget {
             const SizedBox(height: 10),
             ElevatedButton.icon(
               onPressed: () async {
+                if (interstitialAd != null) {
+                  interstitialAd!.show();
+                  interAds();
+                }
                 Directory? dir = await getApplicationDocumentsDirectory();
 
                 File file = File("${dir.path}/${e.customerName}$dateToday.pdf");
@@ -293,11 +307,15 @@ class CreateInvoice extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton.icon(
               onPressed: () async {
+                if (interstitialAd != null) {
+                  interstitialAd!.show();
+                  interAds();
+                }
                 Directory? dir = await getExternalStorageDirectory();
                 // Directory? dir = await getApplicationDocumentsDirectory();
 
                 File file =
-                    File("${dir!.path}/${e.customerName}$dateToday.pdf");
+                File("${dir!.path}/${e.customerName}$dateToday.pdf");
 
                 await file.writeAsBytes(await pdf.save());
 
@@ -310,21 +328,14 @@ class CreateInvoice extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton.icon(
               onPressed: () async {
-                Uint8List bytes = await pdf.save();
-
-                await Printing.layoutPdf(onLayout: (format) => bytes);
-              },
-              label: const Text("Print Invoice PDF"),
-              icon: const Icon(Icons.local_printshop_outlined),
-              style: elevatedButtonStyle(),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton.icon(
-              onPressed: () async {
+                if (interstitialAd != null) {
+                  interstitialAd!.show();
+                  interAds();
+                }
                 Directory? dir = await getExternalStorageDirectory();
 
                 File file =
-                    File("${dir!.path}/${e.customerName}$dateToday.pdf");
+                File("${dir!.path}/${e.customerName}$dateToday.pdf");
 
                 var sharePdf = await file.writeAsBytes(await pdf.save());
 
@@ -337,6 +348,10 @@ class CreateInvoice extends StatelessWidget {
             const SizedBox(height: 20),
             TextButton.icon(
               onPressed: () {
+                if (interstitialAd != null) {
+                  interstitialAd!.show();
+                  interAds();
+                }
                 Get.offAll(() => const HomePage());
               },
               label: const Text("Home Page"),
@@ -372,8 +387,8 @@ class CreateInvoice extends StatelessWidget {
             controller.initialTaxValue.toDouble() /
             100);
         showTotalList.add(controller.totalList[i] *
-                controller.initialTaxValue.toDouble() /
-                100 +
+            controller.initialTaxValue.toDouble() /
+            100 +
             controller.totalList[i]);
         showCounter.add(controller.counter[i]);
         indexList.add(index++);
@@ -535,7 +550,7 @@ class CreateInvoice extends StatelessWidget {
           ),
           pw.Divider(color: pdfColor3, thickness: 1),
           ...indexList.map(
-            (e) => pw.Container(
+                (e) => pw.Container(
               padding: const pw.EdgeInsets.only(right: 5),
               child: pw.Row(
                 children: [
@@ -653,3 +668,4 @@ class CreateInvoice extends StatelessWidget {
     );
   }
 }
+

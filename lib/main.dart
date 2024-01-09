@@ -3,14 +3,15 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:invoice_maker/models/models.dart';
-import 'package:invoice_maker/screens/splash_screen.dart';
+import 'package:invoice_maker/screens/home_page.dart';
 import 'package:invoice_maker/styles/styles.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  MobileAds.instance.initialize();
   await loadCompanyDataFromSharedPreferences();
   await loadDetailsFromSharedPreferences();
   runApp(
@@ -64,7 +65,7 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
           brightness: Brightness.dark, appBarTheme: const AppBarTheme()),
       debugShowCheckedModeBanner: false,
-      home: const SplashScreen(),
+      home: const HomePage(),
     );
   }
 }

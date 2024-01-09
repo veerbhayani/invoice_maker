@@ -4,29 +4,40 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:invoice_maker/controllers/controller.dart';
+import 'package:invoice_maker/screens/adscreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../styles/styles.dart';
 
 // import 'package:shared_preferences/shared_preferences.dart';
 
-class AddCompanyDetails extends StatelessWidget {
-  AddCompanyDetails({super.key});
+class AddCompanyDetails extends StatefulWidget {
+  const AddCompanyDetails({super.key});
+
+  @override
+  State<AddCompanyDetails> createState() => _AddCompanyDetailsState();
+}
+
+class _AddCompanyDetailsState extends State<AddCompanyDetails> {
   Controller controller = Get.put(Controller());
 
   final GlobalKey<FormState> addCompanyDetails = GlobalKey<FormState>();
 
   final TextEditingController companyNameController = TextEditingController();
   final TextEditingController companyAddressController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController companyAddress2Controller =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController companyAddress3Controller =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController companyGSTNoController = TextEditingController();
   final TextEditingController companyEmailController = TextEditingController();
   final TextEditingController companyNumberController = TextEditingController();
-
+ @override
+  void initState() {
+    interAds();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     if (controller.companyAddress.value != "") {
@@ -49,6 +60,10 @@ class AddCompanyDetails extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () {
+              if (interstitialAd != null) {
+                interstitialAd!.show();
+                interAds();
+              }
               onSave();
             },
             style: textButtonStyle(),
@@ -68,26 +83,26 @@ class AddCompanyDetails extends StatelessWidget {
                 alignment: Alignment.bottomRight,
                 children: [
                   Obx(
-                    () => CircleAvatar(
+                        () => CircleAvatar(
                       radius: 70,
                       backgroundColor:
-                          controller.themeColor.value.withOpacity(0.2),
+                      controller.themeColor.value.withOpacity(0.2),
                       backgroundImage:
-                          (controller.selectedImagePath.value == "")
-                              ? null
-                              : FileImage(
-                                  File(controller.selectedImagePath.value),
-                                ),
+                      (controller.selectedImagePath.value == "")
+                          ? null
+                          : FileImage(
+                        File(controller.selectedImagePath.value),
+                      ),
                       child: (controller.selectedImagePath.value != "")
                           ? const Text("")
                           : Text(
-                              textAlign: TextAlign.center,
-                              "Company\nLogo",
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: controller.themeColor.value,
-                              ),
-                            ),
+                        textAlign: TextAlign.center,
+                        "Company\nLogo",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: controller.themeColor.value,
+                        ),
+                      ),
                     ),
                   ),
                   ElevatedButton(
@@ -99,7 +114,7 @@ class AddCompanyDetails extends StatelessWidget {
                       shape: const CircleBorder(),
                     ),
                     child: Obx(
-                      () => Icon(
+                          () => Icon(
                           (controller.selectedImagePath.value.isEmpty)
                               ? Icons.add
                               : Icons.edit,
@@ -148,7 +163,7 @@ class AddCompanyDetails extends StatelessWidget {
                       },
                       controller: companyAddressController,
                       decoration:
-                          textFieldDecoration("Address (Street, Building No)"),
+                      textFieldDecoration("Address (Street, Building No)"),
                     ),
                     const SizedBox(height: 10),
                     Text("Address Line 2", style: textStyleProducts()),
@@ -296,6 +311,10 @@ class AddCompanyDetails extends StatelessWidget {
                     ElevatedButton.icon(
                       icon: const Icon(Icons.save),
                       onPressed: () {
+                        if (interstitialAd != null) {
+                          interstitialAd!.show();
+                          interAds();
+                        }
                         onSave();
                       },
                       style: elevatedButtonStyle(),
@@ -337,6 +356,7 @@ class AddCompanyDetails extends StatelessWidget {
   // }
 
   onSave() async {
+
     if (addCompanyDetails.currentState!.validate()) {
       addCompanyDetails.currentState!.save();
 
@@ -357,7 +377,10 @@ class AddCompanyDetails extends StatelessWidget {
       } else {
         // Save data to SharedPreferences
         await saveCompanyDataToSharedPreferences();
-
+        if (interstitialAd != null) {
+          interstitialAd!.show();
+          interAds();
+        }
         Get.back();
       }
     }
